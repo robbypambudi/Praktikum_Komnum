@@ -1,93 +1,90 @@
 # Praktikum Komputasi Numerik
 
 Anggota Kelompok :
+
 1. Hanafi Satriyo Utomo Setiawan (5025211195)
 2. Sandyatama Fransisna Nugraha (5025211196)
 3. Robby Ulung Pambudi (5025211042)
 
 ## Praktikum 1
+
 ### Soal
+
 Anda sudah mengerti algoritma pemrosesan metode Bolzano, dan anda sudah memahami cara kerjanya. Sekarang anda tinggal mengimplementasikan algoritma tersebut menjadi sebuah program komputer metode Bolzano (yang dapat menampilkan proses iteratif numerik, lengkap dengan grafik fungsinya).
 
-### Code 
+### Masukan
+
+Masukan pertama kali adalah fungsi yang berformat sebagai berikut :
+`(x**2) + (3*x)` => `x^2 + 3x`
+
+Inputan yang kedua adalah Batas Bawah dan Batas atas dari sebuah fungsi
+
+### Keluaran
+
+| Iterasi | x1    | x2    | x3      | f(x1)    | f(x2)   | f(x3)     |
+| ------- | ----- | ----- | ------- | -------- | ------- | --------- |
+| 1       | 5     | -1    | 2       | 40       | -2      | 10        |
+| 2       | 2     | -1    | 0.5     | 10       | -2      | 1.75      |
+| 3       | 0.5   | -1    | -0.25   | 1.75     | -2      | -0.6875   |
+| 4       | 0.5   | -0.25 | 0.125   | 1.75     | -0.6875 | 0.390625  |
+| 5       | 0.125 | -0.25 | -0.0625 | 0.390625 | -0.6875 | -0.183594 |
+
+Batas Bawah 0.125 dan Batas Atas -0.0625
+Hasil root setelah iterasi ke-5 adalah 0.03125
+
+### Code
+
 ```
+import matplotlib.pyplot as plt
+import numpy as np
+from tabulate import tabulate
 
-#include <iostream>
-#include <iomanip>
-#include <math.h>
+def bolzano_method(func, a, b, it):
+    i = 1
+    ite = int(it)
+    def f(x):
+        f = eval(func)
+        return f
+    ListData = [['Iterasi  ', '  x1  ', '  x2  ', '  x3  ', '  f(x1)  ', '  f(x2)  ', '  f(x3)  ']]
+    while it > 0:
+        c = (b+a)/2
+        ListData.append([i,a,b,c,f(a),f(b),f(c)])
+        i = i + 1
+        if f(a) * f(b) >= 0:
+            print("No root or multiple roots present")
+            quit()
 
-#define f(x) pow(x, x) - 100
+        elif f(c) * f(a) < 0:
+            b = c
 
-using namespace std;
+        elif f(c) * f(b) < 0:
+            a = c
+        else:
+            print("Error happens")
+            quit()
+        ans = (b+a)/2
+        it -= 1
 
-int main()
-{
-  /* Declaring required variables */
-  float x0, x1, x, f0, f1, f, e;
-  int step = 1;
-  int loop;
 
-  /* Setting precision and writing floating point values in fixed-point notation. */
-  cout << setprecision(6) << fixed;
+    print(tabulate(ListData, headers="firstrow", tablefmt="github"))
 
-/* Inputs */
-up:
-  cout << "Masukan Nilai x[1]: ";
-  cin >> x0;
-  cout << "Masukan Nilai x[2]: ";
-  cin >> x1;
-  cout << "Nilai yang dicari (default x = 0): ";
-  cin >> e;
-  cout << "Masukan banyak Iterasi ";
-  cin >> loop;
+    print(f"Batas Bawah {a} dan Batas Atas {b}")
+    print(f"Hasil root setelah iterasi ke-{ite} adalah {ans}")
 
-  /* Calculating Functional Value */
-  f0 = f(x0);
-  f1 = f(x1);
 
-  /* Checking whether given guesses brackets the root or not. */
-  if (f0 * f1 > 0.0)
-  {
-    cout << "Incorrect Initial Guesses." << f0 << endl;
-    goto up;
-  }
-  /* Implementing Bisection Method */
-  cout << endl
-       << "****************" << endl;
-  cout << "Bisection Method" << endl;
-  cout << "Author By : " << endl;
-  cout << "Robby Ulung Pambudi (5025211042)" << endl;
-  cout << "Hanafi Satriyo Utomo Setiawan (5025211195)" << endl;
-  cout << "Sandyatama Fransisna Nugraha (5025211196)" << endl;
-  cout
-      << "****************" << endl;
-  do
-  {
-    /* Bisecting Interval */
-    x = (x0 + x1) / 2;
-    f = f(x);
+def main () :
+  function = input("Masukan Fungsi  : ")
+  a = input("Batas Bawah: ")
+  b = input("Batas Atas : ")
+  iteration = input("Jumlah Iterasi: ")
 
-    cout << "Iteration-" << step << "\tx3 = " << setw(10) << x << " and f(x3) = " << setw(10) << f(x) << endl;
+  x = np.linspace(-10,10,num = 1000)
+  y = eval(function)
+  plt.plot(x, y)
+  plt.show()
 
-    if (f0 * f < 0)
-    {
-      x1 = x;
-    }
-    else
-    {
-      x0 = x;
-    }
-    cout << "Nilai\tx1 = " << x1 << "\t f(x1) = " << f(x1) << endl;
-    cout << "Nilai\tx2 = " << x0 << "\t f(x2) = " << f(x0) << endl;
-    cout << endl;
-    step = step + 1;
-  } while (--loop);
+  bolzano_method(function, float(a), float(b), float(iteration))
 
-  cout << endl
-       << "Root is : " << x << endl;
-
-  return 0;
-}
+if (__name__ == "__main__"):
+  main()
 ```
-
-
